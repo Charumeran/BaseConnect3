@@ -3,7 +3,10 @@ import { supabase } from '../lib/supabaseClient';
 import JobList from '../components/JobList';
 
 // サーバーコンポーネントとしてデータを取得
-export default async function HomePage() {
+export default async function HomePage({ res }: any) {
+    // キャッシュ無効化
+    res?.setHeader('Cache-Control', 'no-store');
+  
   // Supabaseからデータを取得
   const { data: posts, error } = await supabase.from('posts').select('*');
 
