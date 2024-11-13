@@ -47,6 +47,7 @@ export default function PostForm() {
           // 投稿後のページ遷移
           console.log("ホームページへ遷移します");
           router.push('/');
+
         }
     } catch (error) {
         console.error('Unhandled error:', error);

@@ -1,19 +1,45 @@
 // app/page.tsx
-import { supabase } from '../lib/supabaseClient';
+// import { supabase } from '../lib/supabaseClient';
+// import JobList from '../components/JobList';
+
+// // サーバーコンポーネントとしてデータを取得
+// export default async function HomePage({res}:any) {
+//   if (res) {
+//     res.setHeader('Cache-Control', 'no-store, max-age=0'); // キャッシュ無効化
+//   }
+
+//   let posts = [];
+
+//   try {
+//     // Supabaseからデータを取得
+//     const { data } = await supabase.from('posts').select('*')
+//     posts = data || [];
+//   } catch (error) {
+//     console.error('Error fetching posts:', error instanceof Error ? error.message : error);
+//      return <p>Failed to load posts</p>;
+//   }
+"use client";
+
+import { useEffect, useState } from 'react';
 import JobList from '../components/JobList';
+import { supabase } from '../lib/supabaseClient';
 
-// サーバーコンポーネントとしてデータを取得
-export default async function HomePage() {
-  let posts = [];
+export default function HomePage() {
+  const [posts, setPosts] = useState<any[]>([]);
 
-  try {
-    // Supabaseからデータを取得
-    const { data } = await supabase.from('posts').select('*')
-    posts = data || [];
-  } catch (error) {
-    console.error('Error fetching posts:', error instanceof Error ? error.message : error);
-     return <p>Failed to load posts</p>;
-  }
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const { data, error } = await supabase.from('posts').select('*');
+      if (error) {
+        console.error('Error fetching posts:', error.message);
+      } else {
+        setPosts(data || []);
+      }
+    };
+
+    fetchPosts(); // 初回データ取得
+
+  }, []);
 
   return (
     <>
