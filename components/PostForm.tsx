@@ -22,9 +22,11 @@ export default function PostForm(){
         };
         
             try {
-                const { error } = await supabase.from('posts').insert(newPost);
-                if (error) throw error;
-            
+                const { data,error } = await supabase.from('posts').insert(newPost);
+                if (error) 
+                  // {throw new Error(error.message);}
+                {console.error('Supabase error:', error.message);}
+                if (data){
                 // フォームをリセット
                 setTitle('');
                 setIncome('');
@@ -33,6 +35,7 @@ export default function PostForm(){
 
                 // 投稿後のページ遷移
                 router.push('/');
+                }
             } catch (error) {
               console.error('Error creating post:', error);
               alert('投稿の作成に失敗しました。');
