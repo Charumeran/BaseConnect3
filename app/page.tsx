@@ -4,19 +4,21 @@ import JobList from '../components/JobList';
 
 // サーバーコンポーネントとしてデータを取得
 export default async function HomePage() {
-  
-  // Supabaseからデータを取得
-  const { data: posts, error } = await supabase.from('posts').select('*').throwOnError();
+  let posts = [];
 
-  if (error) {
-    console.error('Error fetching posts:', error.message);
-    return <p>Failed to load posts</p>;
+  try {
+    // Supabaseからデータを取得
+    const { data } = await supabase.from('posts').select('*')
+    posts = data || [];
+  } catch (error) {
+    console.error('Error fetching posts:', error instanceof Error ? error.message : error);
+     return <p>Failed to load posts</p>;
   }
 
   return (
     <>
-     {/* ヘッダー */}
-     <header>
+      {/* ヘッダー */}
+      <header>
         <nav className="bg-blue-900 p-3 flex items-center">
           <h1 className="text-2xl text-neutral-50 ml-2">求人検索アプリ</h1>
           <div className="flex ml-auto">
@@ -30,13 +32,8 @@ export default async function HomePage() {
 
       {/* メインコンテンツ */}
       <main className="flex h-screen">
-        <JobList posts={posts || []} />
+        <JobList posts={posts} />
       </main>
     </>
-  );  
+  );
 }
-
-
-
-
-
