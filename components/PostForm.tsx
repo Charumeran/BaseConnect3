@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '../lib/supabaseClient';
+import { Post } from '../app/types';
 
 export default function PostForm() {
   const [category, setCategory] = useState<string | null>(null);
@@ -18,7 +19,7 @@ export default function PostForm() {
 
     if (title && income && category) {
       console.log("フォームのバリデーションが通過しました");
-      const newPost = {
+      const newPost: Partial<Post> = {
         title,
         income: Number(income),
         categories: [category],

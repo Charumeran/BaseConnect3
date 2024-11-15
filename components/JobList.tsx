@@ -2,13 +2,7 @@
 "use client"; // クライアントコンポーネント
 
 import { useState } from 'react';
-
-interface Post {
-  id: number;
-  title: string;
-  income: number;
-  categories: string[];
-}
+import { Post } from '../app/types';
 
 interface JobListProps {
   posts: Post[];
