@@ -47,6 +47,8 @@ export default function PostForm() {
     
           // 投稿後のページ遷移
           console.log("ホームページへ遷移します");
+
+          router.refresh();
           router.push('/');
 
         }
