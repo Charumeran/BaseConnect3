@@ -1,4 +1,6 @@
 // app/page.tsx
+export const revalidate = 0;
+
 import { supabase } from '../lib/supabaseClient';
 import JobList from '../components/JobList';
 
