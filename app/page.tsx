@@ -1,21 +1,25 @@
 // app/page.tsx
 export const revalidate = 0;
 
-import { supabase } from '../lib/supabaseClient';
+import pool from '../lib/db';
 import JobList from '../components/JobList';
+
+async function fetchPosts() {
+  try {
+    const client = await pool.connect();
+    const res = await client.query('SELECT * FROM posts ORDER BY id DESC');
+    client.release();
+    return res.rows;
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    return [];
+  }
+}
 
 // サーバーコンポーネントとしてデータを取得
 export default async function HomePage() {
-  let posts = [];
-
-  try {
-    const { data, error } = await supabase.from('posts').select('*').throwOnError();
-    posts = data || [];
-  } catch (error) {
-    console.error('Error fetching posts:', error instanceof Error ? error.message : error);
-    return <p>Failed to load posts</p>;
-  }
-
+  const posts = await fetchPosts();
+  
   return (
     <>
       {/* ヘッダー */}

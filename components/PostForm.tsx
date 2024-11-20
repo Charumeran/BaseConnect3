@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '../lib/supabaseClient';
 import { Post } from '../app/types';
 
 export default function PostForm() {
@@ -25,38 +24,32 @@ export default function PostForm() {
         categories: [category],
       };
 
- 
       try {
-        const { data, error } = await supabase.from('posts').insert(newPost).select();
-    
-    
-        if (error) {
-          console.error('Supabase insertion error:', error.message);
-          alert('投稿の作成に失敗しました: ' + error.message);
-          return;
-        }
-    
-        if (data) {
-          console.log("データが正常に挿入されました:", data);
-    
-          // フォームをリセット
+        const res = await fetch('/api/posts', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newPost),
+        });
+
+        if (res.ok) {
+          console.log("データが正常に挿入されました");
           setTitle('');
           setIncome('');
           setCategory(null);
           setIsCategoryOpen(false);
-    
-          // 投稿後のページ遷移
-          console.log("ホームページへ遷移します");
-
           router.refresh();
           router.push('/');
-
+        } else {
+          const errorData = await res.json();
+          console.error('Insertion error:', errorData.message);
+          alert('投稿の作成に失敗しました: ' + errorData.message);
         }
-    } catch (error) {
+      } catch (error) {
         console.error('Unhandled error:', error);
         alert('予期しないエラーが発生しました。');
-    }
-    
+      }
     } else {
       alert('カテゴリ、年収、タイトルは必須項目です。');
     }
@@ -96,7 +89,7 @@ export default function PostForm() {
             </div>
           )}
         </div>
-      
+
         {/* 年収入力欄 */}
         <label>
           <p className="my-2">年収（万円）</p>
@@ -109,7 +102,7 @@ export default function PostForm() {
             className="border p-1 w-56"
           />
         </label>
-      
+
         {/* タイトル入力欄 */}
         <label>
           <p className="my-2">求人タイトル</p>
